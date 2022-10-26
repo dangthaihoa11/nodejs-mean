@@ -250,24 +250,33 @@ class Html extends Admin {
         <form id="formData">
             <div class="row">
                 <div class="form-group col-md-6">
-                    <label for="name">Họ và Tên</label>
+                    <label for="name">Họ và Tên <span class="required">(*)</span></label>
                     <input type="text" class="form-control" id="name" value="` + name + `" placeholder="Ví Dụ: Nguyễn Văn A">
+                    <span class="error error_name"></span>
                 </div>
                 <div class="form-group col-md-6">
-                    <label for="username">Tên Đăng Nhập</label>
+                    <label for="username">Tên Đăng Nhập <span class="required">(*)</span></label>
                     <input type="text" class="form-control" id="username" value="` + username + `" placeholder="Ví Dụ: nguyenvana">
+                    <span class="error error_username"></span>
+
                 </div>
                 <div class="form-group col-md-6">
-                    <label for="passwd">Mật Khẩu</label>
+                    <label for="passwd">Mật Khẩu <span class="required">(*)</span></label>
                     <input type="password" class="form-control" id="passwd" placeholder="******" ` + password + `>
+                    <span class="error error_password"></span>
+
                 </div>
                 <div class="form-group col-md-6">
-                    <label for="email">Email</label>
+                    <label for="email">Email <span class="required">(*)</span></label>
                     <input type="email" class="form-control" id="email" value="` + email + `" placeholder="Ví Dụ: nguyenvana@gmail.com">
+                    <span class="error error_email"></span>
+
                 </div>
                 <div class="form-group col-md-6">
-                    <label for="phone">Số Điện Thoại</label>
+                    <label for="phone">Số Điện Thoại <span class="required">(*)</span></label>
                     <input type="tel" class="form-control" id="phone" value="` + phone + `" placeholder="Ví Dụ: 038.555.1234">
+                    <span class="error error_phone"></span>
+
                 </div>
             </div>
             <button type="submit" class="btn btn-primary">

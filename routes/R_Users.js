@@ -85,8 +85,9 @@ router.get('/edit/:id', (req, res) => {
 // formData
 router.post('/formData', function(req, res) {
     // 1. khai báo
-    var name = username = passwd = email = phone = address = ''
-    var flag = 1
+    var name = username = passwd = email = phone = address = '';
+    var error = '',
+        flag = 1;
 
     // 2. Lấy dữ liệu
     name = req.body.name
@@ -97,6 +98,30 @@ router.post('/formData', function(req, res) {
     address = req.body.address
 
     // 3. kiểm tra dữ liệu
+    if (name == '') {
+        flag = 0;
+        error += 'Vui lòng nhập tên'
+    }
+
+    if (username == '') {
+        flag = 0;
+        error += 'Vui lòng nhập tên đăng nhập'
+    }
+
+    if (passwd == '') {
+        flag = 0;
+        error += 'Vui lòng nhập mật khẩu'
+    }
+    if (email == '') {
+        flag = 0;
+        error += 'Vui lòng nhập email'
+    }
+
+    if (phone == '') {
+        flag = 0;
+        error += 'Vui lòng nhập số điện thoại'
+    }
+
     // 4. tổng kết
     if (flag == 1) {
         // xử lý với database

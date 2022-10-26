@@ -106,7 +106,6 @@
             passwd = $('#passwd').val();
             email = $('#email').val();
             phone = $('#phone').val();
-            address = $('#address').val();
 
             // alert( 
             //     name + '/' + 
@@ -116,6 +115,42 @@
             //     phone + '/' + address )
 
             // 3. kiểm tra dữ liệu
+            if (name == '') {
+                flag = 0;
+                $('.error_name').text('Vui lòng nhập tên')
+            } else {
+                $('.error_name').text('')
+            }
+
+            if (username == '') {
+                flag = 0;
+                $('.error_username').text('Vui lòng nhập tên đăng nhập')
+            } else {
+                $('.error_username').text('')
+            }
+
+            if (passwd == '') {
+                flag = 0;
+                $('.error_password').text('Vui lòng nhập mật khẩu')
+            } else {
+                $('.error_password').text('')
+            }
+
+            if (email == '') {
+                flag = 0;
+                $('.error_email').text('Vui lòng nhập email')
+            } else {
+                $('.error_email').text('')
+            }
+
+            if (phone == '') {
+                flag = 0;
+                $('.error_phone').text('Vui lòng nhập số điện thoại')
+            } else {
+                $('.error_phone').text('')
+            }
+
+
             // 4. tổng kết
             if (flag == 1) {
                 // Gửi ajax
