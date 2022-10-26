@@ -12,4 +12,7 @@ router.use('/admin/categories', require('../routes/R_Categories'))
 router.use('/admin/products', require('../routes/R_Products'))
 router.use('/admin/users', require('../routes/R_Users'))
 
+// Gọi apis
+router.use('/api/users', require('../apis/A_Users'))
+
 module.exports = router

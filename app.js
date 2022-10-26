@@ -17,4 +17,7 @@ app.set('view engine', 'ejs')
 // Gọi Control
 app.use('/', require('./configs/Controls'))
 
+// Connect Database
+require('./configs/Database')
+
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))

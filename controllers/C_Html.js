@@ -76,7 +76,7 @@ class Html extends Admin {
         </div>`;
     }
 
-    pcoded_content(type) {
+    pcoded_content(type, array = [], search = '', sumToTal, pageNumber) {
         var str = '';
 
         str += '<section class="pcoded-main-container">';
@@ -86,7 +86,7 @@ class Html extends Admin {
         str += this.breadcrumbs();
 
         // 3. card-body
-        str += this.card_body(type);
+        str += this.card_body(type, array, search, sumToTal, pageNumber);
 
         // 4. pagination
         //str += this.pagination();
@@ -100,11 +100,65 @@ class Html extends Admin {
 
     }
 
-    pagination() {
+    pagination(sumTotal, pageNumber) {
+        // disabled
 
+        // First
+        var str = '<li class="paginate_button page-item">';
+        str += '<a href="#" class="page-link">First</a>';
+        str += '</li>';
+        // end First
+
+        // Previous
+        str += '<li class="paginate_button page-item">';
+        str += '<a href="#" class="page-link">Previous</a>';
+        str += '</li>';
+        // end Previous
+
+        var value_pageNumber = parseInt(pageNumber);
+
+        if (pageNumber == undefined || pageNumber == 1) {
+            value_pageNumber = 1;
+        }
+
+        //console.log(value_pageNumber)
+
+        for (let i = 0; i < sumTotal; i++) {
+            // xét active
+            var active = ((i + 1) == value_pageNumber) ? 'active' : '';
+
+            str += '<li class="paginate_button page-item ' + active + '">'; //active
+            str += '<a href="/admin/' + this.module_name() + '/index/' + (i + 1) + '" class="page-link">' + (i + 1) + '</a>';
+            str += '</li>';
+        }
+
+        // Next
+        str += '<li class="paginate_button page-item">';
+        str += '<a href="#" class="page-link">Next</a>';
+        str += '</li>';
+        // end Next
+
+        // Last
+        str += '<li class="paginate_button page-item">';
+        str += '<a href="#" class="page-link">Last</a>';
+        str += '</li>';
+        // end Last
+
+        return `<div class="row">
+            <div class="col-sm-12 col-md-5">
+            <div class="dataTables_info" id="order-table_info" role="status" aria-live="polite">Showing 1 to 10 of 20 entries</div>
+            </div>
+            <div class="col-sm-12 col-md-7">
+            <div class="dataTables_paginate paging_simple_numbers" id="order-table_paginate">
+                <ul class="pagination">
+                    ` + str + `
+                </ul>
+            </div>
+            </div>
+        </div>`;
     }
 
-    table() {
+    table(array, search, sumToTal, pageNumber) {
         var str = '';
 
         str += '<div class="row">';
@@ -112,115 +166,122 @@ class Html extends Admin {
         str += '<div class="card">';
 
         // 2. card-header
-        str += this.card_header();
+        str += this.card_header(search);
 
         str += `<div class="card-body table-border-style">
+            <div class="alert alert-success d-none">
+                <strong>Success!</strong> Indicates a successful or positive action.
+            </div>
             <div class="table-responsive">
                 <table class="table table-striped">
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>First Name</th>
-                            <th>Last Name</th>
+                            <th>Họ và Tên</th>
+                            <th>Tên Đăng Nhập</th>
+                            <th>Email</th>
                             <th>Chức Năng</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Mark</td>
-                            <td>Otto</td>
+                    <tbody>`;
+
+        array.forEach((e, i) => {
+            str += `<tr id="` + e._id + `">
+                            <td>` + (i + 1) + `</td>
+                            <td>` + e.name + `</td>
+                            <td>` + e.username + `</td>
+                            <td>` + e.email + `</td>
                             <td>
-                                <button type="button" class="btn btn-outline-info has-ripple">
+                                <a href="/admin/users/edit/` + e._id + `" class="btn btn-outline-info has-ripple">
                                     <i class="fa fa-edit"></i> Sửa
-                                </button>
-                                <button type="button" class="btn btn-outline-danger has-ripple">
+                                </a>
+                                <button type="button" class="btn btn-outline-danger has-ripple"
+                                 data-bs-toggle="modal" data-bs-target="#exampleModalLive" onclick="getID('` + e._id + `')">
                                     <i class="fa fa-trash"></i> Xóa
                                 </button>
                             </td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Jacob</td>
-                            <td>Thornton</td>
-                            <td>
-                                <button type="button" class="btn btn-outline-info has-ripple">
-                                    <i class="fa fa-edit"></i> Sửa
-                                </button>
-                                <button type="button" class="btn btn-outline-danger has-ripple">
-                                    <i class="fa fa-trash"></i> Xóa
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>Larry</td>
-                            <td>the Bird</td>
-                            <td>
-                                <button type="button" class="btn btn-outline-info has-ripple">
-                                    <i class="fa fa-edit"></i> Sửa
-                                </button>
-                                <button type="button" class="btn btn-outline-danger has-ripple">
-                                    <i class="fa fa-trash"></i> Xóa
-                                </button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>`;
+                        </tr>`;
+        })
+
+        str += `</tbody>
+                </table></div>`;
+
+        // pagination
+        str += this.pagination(sumToTal, pageNumber);
+
+        str += `</div>`;
 
         str += '</div></div></div>';
 
         return str;
     }
 
-    form() {
+    form(obj = '') { //console.log(obj)
         var str = '';
 
         str += '<div class="row">';
         str += '<div class="col-xl-12">';
         str += '<div class="card">';
 
+        // xét thêm hoặc chỉnh sửa
+        var name, username, email, phone;
+
+        if (this.function_name() == 'add') {
+            name = username = email = phone = '';
+        } else {
+            name = (obj.name == null) ? '' : obj.name;
+            username = (obj.username == null) ? '' : obj.username;
+            email = (obj.email == null) ? '' : obj.email;
+            phone = (obj.phone == null) ? '' : obj.phone;
+        }
+
+        // xét password
+        var password = '';
+        var changePassHtml = '';
+
+
+        if (this.function_name() == 'edit') {
+            password = 'value="*****" disabled';
+            changePassHtml = `<button type="button" class="btn btn-primary">
+            <i class="fa fa-retweet"></i> Đổi Mật Khẩu</button>`;
+        }
 
         str += `<div class="card-body">
         <form id="formData">
-            <div class="form-row">
+            <div class="row">
                 <div class="form-group col-md-6">
                     <label for="name">Họ và Tên</label>
-                    <input type="text" class="form-control" id="name" placeholder="Ví Dụ: Nguyễn Văn A">
-                    <span class="error error_name"></span>
-                    
+                    <input type="text" class="form-control" id="name" value="` + name + `" placeholder="Ví Dụ: Nguyễn Văn A">
                 </div>
                 <div class="form-group col-md-6">
                     <label for="username">Tên Đăng Nhập</label>
-                    <input type="text" class="form-control" id="username" placeholder="Ví Dụ: nguyenvana">
-                    <span class="error error_username"></span>
-
+                    <input type="text" class="form-control" id="username" value="` + username + `" placeholder="Ví Dụ: nguyenvana">
                 </div>
                 <div class="form-group col-md-6">
                     <label for="passwd">Mật Khẩu</label>
-                    <input type="password" class="form-control" id="passwd">
-                    <span class="error error_password"></span>
-
+                    <input type="password" class="form-control" id="passwd" placeholder="******" ` + password + `>
                 </div>
                 <div class="form-group col-md-6">
                     <label for="email">Email</label>
-                    <input type="email" class="form-control" id="email" placeholder="Ví Dụ: nguyenvana@gmail.com">
-                    <span class="error error_email"></span>
-
+                    <input type="email" class="form-control" id="email" value="` + email + `" placeholder="Ví Dụ: nguyenvana@gmail.com">
                 </div>
                 <div class="form-group col-md-6">
                     <label for="phone">Số Điện Thoại</label>
-                    <input type="tel" class="form-control" id="phone" placeholder="Ví Dụ: 038.555.1234">
-                    <span class="error error_phone"></span>
-
+                    <input type="tel" class="form-control" id="phone" value="` + phone + `" placeholder="Ví Dụ: 038.555.1234">
                 </div>
-                <div class="form-group col-md-6">
-                    <label for="address">Địa Chỉ</label>
-                    <input type="text" class="form-control" id="address" placeholder="Ví Dụ: 22 Phạm Văn Đồng">
-                    <span class="error error_address"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">
+                <i class="fa fa-save"></i>
+                Lưu Lại</button>
+            ` + changePassHtml + `
+            <a href="/admin/` + this.module_name() + `/index" class="btn  btn-secondary">Thoát</a>
+        </form></div>`;
 
+        /**
+         * 
+         * <div class="form-group col-md-6">
+                    <label for="address">Địa Chỉ</label>
+                    <input type="text" class="form-control" id="address" value="`+address+`" placeholder="Ví Dụ: 22 Phạm Văn Đồng">
                 </div>
                 <div class="form-group col-md-6">
                     <label for="province">Tỉnh/ Thành Phố</label>
@@ -240,27 +301,22 @@ class Html extends Admin {
                         <option value="">-Chọn-</option>
                     </select>
                 </div>
-            </div>
-            <button type="submit" class="btn btn-primary">
-                <i class="fa fa-save"></i>
-                Đăng Ký</button>
-            <a href="/admin/` + this.module_name() + `/index" class="btn  btn-secondary">Thoát</a>
-        </form></div>`;
+         */
 
         str += '</div></div></div>';
 
         return str;
     }
 
-    card_body(type) {
+    card_body(type, array = [], search, sumToTal, pageNumber) {
         var str = '';
 
         if (type == 'table') {
             // bảng dữ liệu
-            str += this.table();
+            str += this.table(array, search, sumToTal, pageNumber);
         } else if (type == 'form') {
             // form
-            str += this.form();
+            str += this.form(array);
         } else if (type == 'dashboard') {
             // form
             str += this.dashboard();
@@ -269,12 +325,29 @@ class Html extends Admin {
         return str;
     }
 
-    card_header() {
+    card_header(search = '') {
         return `<div class="card-header">
-            <a href="/admin/` + this.module_name() + `/add" class="btn btn-outline-primary has-ripple">
-                <i class="fa fa-plus"></i>
-                Thêm Mới
-            </a>
+            <div class="row">
+                <div class="col-md-8">
+                    <a href="/admin/` + this.module_name() + `/add" class="btn btn-outline-primary has-ripple">
+                        <i class="fa fa-plus"></i>
+                        Thêm Mới
+                    </a>
+                    <button class="btn btn-outline-danger has-ripple">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </div>
+                <div class="col-md-4">
+                    <form>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" name="search" value="` + search + `" placeholder="Search">
+                        <button class="btn btn-success" type="submit">
+                            <i class="fa fa-search"></i>
+                        </button> 
+                    </div>
+                    </form>
+                </div>
+            </div>
         </div>`;
     }
 

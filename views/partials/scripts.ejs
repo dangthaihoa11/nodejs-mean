@@ -1,3 +1,27 @@
+<div id="exampleModalLive" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLiveLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLiveLabel">
+                    Xóa Dữ Liệu
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Bạn có chắc chắn muốn xóa!</p>
+                <input type="hidden" id="getID">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn  btn-secondary" data-bs-dismiss="modal">Thoát</button>
+                <button type="button" class="btn  btn-danger" data-bs-dismiss="modal" onclick="xoangay()">
+                    <i class="fa fa-trash"></i>
+                    Xóa Ngay
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Required Js -->
 <script src="/assets/js/vendor-all.min.js"></script>
 <script src="/assets/js/plugins/bootstrap.min.js"></script>
@@ -5,50 +29,78 @@
 <script src="/assets/js/pcoded.min.js"></script>
 
 <!-- Apex Chart -->
-<script src="/assets/js/plugins/apexcharts.min.js"></script>
-
+<!-- <script src="/assets/js/plugins/apexcharts.min.js"></script> -->
 
 <!-- custom-chart js -->
-<script src="/assets/js/pages/dashboard-main.js"></script>
+<!-- <script src="/assets/js/pages/dashboard-main.js"></script> -->
+
+<script>
+    function getID(id) {
+        $('#getID').val(id);
+        //alert(id)
+    }
+
+    function xoangay() {
+        // Lấy giá trị nhận được từ getID
+        var getID = $('#getID').val();
+        //alert(getID)
+        $('#' + getID).remove();
+
+        // Gửi ajax
+        if (getID != '') {
+            $.ajax({
+                url: '/admin/users/deleteData',
+                type: 'POST',
+                data: {
+                    getID
+                },
+                success: function(response) {
+                    //alert(response.results)
+
+                    // nhận được dữ liệu thành công (kq=1) hoặc thất bại (kq=0)
+
+                    // 1. hiện thông báo lỗi
+                    $('.card-body .alert').removeClass('d-none')
+
+                    // 2. truyền nội dung trả về từ server vào alert
+                    $('.card-body .alert').text(response.results)
+
+                    // 3. chuyển màu
+                    if (response.kq == 0) {
+                        // 3.1 xóa class alert-success
+                        $('.card-body .alert').removeClass('alert-success')
+                            // 3.2 thêm class alert-danger
+                        $('.card-body .alert').addClass('alert-danger')
+                    } else {
+                        // 3.1 xóa class alert-danger
+                        $('.card-body .alert').removeClass('alert-danger')
+                            // 3.2 thêm class alert-success
+                        $('.card-body .alert').addClass('alert-success')
+                    }
+
+                    //console.log(response)
+                }
+            });
+
+            return false;
+        } else {
+            alert('ID không tồn tại');
+        }
+    }
+</script>
 
 
-<!-- Modal -->
-
-<div id="exampleModalLive" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLiveLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLiveLabel">Xóa dữ liệu</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            </div>
-            <div class="modal-body">
-                <p class="mb-0">Bạn có chắc chắn muốn xóa không!</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn  btn-dark" data-dismiss="modal">Đóng</button>
-                <button type="button" class="btn  btn-danger">
-                    <i class="fa fa-trash"></i>
-                    Xóa
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<!-- Xử lý form dữ liệu -->
-
+<!-- xử lý form dữ liệu -->
 <script>
     $(document).ready(function() {
         $('#formData').on('submit', function(e) {
             e.preventDefault();
 
-            // 1. Khai báo
+            // 1. khai báo
             var name = username = passwd = email = phone = address = '';
             var flag = 1;
 
-            // 2. lấy dữ liệu
-
+            // 2. Lấy dữ liệu
             name = $('#name').val();
             username = $('#username').val();
             passwd = $('#passwd').val();
@@ -56,51 +108,15 @@
             phone = $('#phone').val();
             address = $('#address').val();
 
-            // 3. Kiểm tra dữ liệu
+            // alert( 
+            //     name + '/' + 
+            //     username + '/' + 
+            //     passwd + '/' + 
+            //     email + '/' + 
+            //     phone + '/' + address )
 
-            if (name == '') {
-                flag = 0;
-                $('.error_name').text('Vui lòng nhập tên');
-            } else {
-                $('.error_name').text('');
-            }
-
-            if (username == '') {
-                flag = 0;
-                $('.error_username').text('Vui lòng nhập tên đăng nhập');
-            } else {
-                $('.error_name').text('');
-            }
-
-            if (passwd == '') {
-                flag = 0;
-                $('.error_password').text('Vui lòng nhập mật khẩu');
-            } else {
-                $('.error_name').text('');
-            }
-
-            if (phone == '') {
-                flag = 0;
-                $('.error_phone').text('Vui lòng nhập số điện thoại');
-            } else {
-                $('.error_phone').text('');
-            }
-
-            if (address == '') {
-                flag = 0;
-                $('.error_address').text('Vui lòng nhập địa chỉ');
-            } else {
-                $('.error_address').text('');
-            }
-
-            if (email == '') {
-                flag = 0;
-                $('.error_email').text('Vui lòng nhập email');
-            } else {
-                $('.error_email').text('');
-            }
-            // Tổng kết
-
+            // 3. kiểm tra dữ liệu
+            // 4. tổng kết
             if (flag == 1) {
                 // Gửi ajax
                 $.ajax({
@@ -115,7 +131,13 @@
                         address
                     },
                     success: function(response) {
-                        console.log(response)
+                        if (response.kq == 1) {
+                            alert('Thêm thành công')
+                                // chuyển trang
+                            window.location.href = '/admin/users/index';
+                        } else {
+                            alert(response.results)
+                        }
                     }
                 });
 
